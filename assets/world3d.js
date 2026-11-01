@@ -332,7 +332,7 @@
     close:   { cam: "iso", shift: 0.2 },
   };
 
-  var current = null;
+  var current = null, lastCam = null, lastMain = null;
 
   function setParams(rig, sp, d, status, dur) {
     gsap.killTweensOf(rig.p);
@@ -348,14 +348,23 @@
 
   function go(id, step, instant) {
     if (!ok) return;
-    var st = STATES[id] || STATES.title, cam = CAM[st.cam];
+    var st = STATES[id] || STATES.title;
     var dur = instant || reduced ? 0 : 1.4;
     var changed = current !== id; current = id;
     var main = R.main, orig = R.original, hist = R.history;
+    // the earlier-cases slide keeps the plate on screen until its replay starts, so the move from the previous slide is continuous
+    var camKey = st.cam, mainOn = st.main ? 1 : 0;
+    if (id === "cases" && step < 2) { camKey = "mid"; mainOn = 1; }
+    var cam = CAM[camKey];
+    if (changed || camKey !== lastCam) {
+      gsap.to(view, { px: cam.p[0], py: cam.p[1], pz: cam.p[2], tx: cam.t[0], ty: cam.t[1], tz: cam.t[2], shift: st.shift, duration: dur, ease: "power2.inOut", overwrite: true });
+    }
+    if (changed || mainOn !== lastMain) {
+      fadeTo(main.g, mainOn, dur ? 0.7 : 0, dur && mainOn && !main.g.visible ? 0.4 : 0, function () { applyVis(main); });
+    }
+    lastCam = camKey; lastMain = mainOn;
 
     if (changed) {
-      gsap.to(view, { px: cam.p[0], py: cam.p[1], pz: cam.p[2], tx: cam.t[0], ty: cam.t[1], tz: cam.t[2], shift: st.shift, duration: dur, ease: "power2.inOut", overwrite: true });
-      fadeTo(main.g, st.main ? 1 : 0, dur ? 0.7 : 0, dur && st.main && !main.g.visible ? 0.4 : 0, function () { applyVis(main); });
       fadeTo(orig.g, st.original ? 1 : 0, dur ? 0.6 : 0, 0, function () { applyVis(orig); });
       fadeTo(R.slab, st.slab ? 1 : 0, dur ? 0.6 : 0, dur ? 0.3 : 0);
       fadeTo(R.scope, st.scope ? 1 : 0, dur ? 0.6 : 0, dur ? 0.3 : 0);
@@ -400,7 +409,7 @@
     if (id === "scope") { P.sp = 45; P.d = 6; }
 
     main.gp.sp = P.gsp; main.gp.d = P.gd; main.ghostMat.color.setHex(P.gcol); main.ghostFill.color.setHex(P.gcol);
-    if (st.main) setParams(main, P.sp, P.d, P.s, dur && !changed ? 1.6 : 0);
+    if (mainOn) setParams(main, P.sp, P.d, P.s, dur && !changed ? 1.6 : 0);
     var dl = changed ? 0.8 : 0;
     vis(main, "dims", P.dims, dur, dl);
     vis(main, "zones", P.zones, dur, dl);
