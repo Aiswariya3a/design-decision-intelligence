@@ -512,3 +512,7 @@ body.touch #help { display: none; }
 body.rotated #rotate-hint { display: block; }
 body.rotated.hint-on #rotate-hint { opacity: 1; }
 body.rotated #video-overlay video { width: 88vh; max-height: 92vw; max-width: none; transform: rotate(90deg); }
+
+/* ---------------------------------------------------------------- School of Innovation logo */
+#footer img.soi { height: 48px; width: auto; display: block; }
+#s-title .soi-title { position: absolute; left: 104px; top: 96px; height: 104px; width: auto; }
