@@ -18,7 +18,7 @@
   var LIMITS = { spacing: [38, 46], dia: [5, 6] };
 
   var renderer, scene, camera, clock, ok = true;
-  var reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var reduced = /[?&]calm/.test(location.search); // motion is part of the story; add ?calm to the link to turn it off
   var view = { px: 5.2, py: 4.4, pz: 7.6, tx: 0, ty: 0, tz: 0, shift: 0.2 };
   var anchors = [];
   var R = {}; // rigs and groups
@@ -469,7 +469,9 @@
     try { renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true, preserveDrawingBuffer: true }); }
     catch (e) { ok = false; }
     if (!ok || !renderer) { ok = false; canvas.style.display = "none"; return false; }
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    // phones show the 1920 x 1080 scene scaled down, so a lower pixel ratio keeps it smooth
+    var coarse = window.matchMedia && matchMedia("(pointer: coarse)").matches;
+    renderer.setPixelRatio(coarse ? 1 : Math.min(window.devicePixelRatio || 1, 2));
     renderer.setSize(W, H, false);
     renderer.outputEncoding = THREE.sRGBEncoding;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;

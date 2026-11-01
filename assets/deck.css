@@ -34,7 +34,7 @@ html, body { width: 100%; height: 100%; overflow: hidden; background: #dfe5ec; }
 body { font-family: var(--body); color: var(--navy); -webkit-font-smoothing: antialiased; }
 
 #stage {
-  position: absolute; left: 50%; top: 50%; width: 1920px; height: 1080px;
+  position: fixed; left: 50%; top: 50%; width: 1920px; height: 1080px;
   overflow: hidden; background: var(--white);
   transition: background-color 0.6s ease;
 }
@@ -492,9 +492,23 @@ body.blackout #blackout { display: block; }
 .mk-svg { width: 760px; height: auto; display: block; }
 .mk-svg text { font-family: var(--body, "IBM Plex Sans", sans-serif); } .mk-svg rect + text { font-family: var(--head); }
 
-/* ---------------------------------------------------------------- demo video button (for viewers of the public link) */
-#video-btn { position: fixed; right: 22px; top: 18px; z-index: 50; font: 600 15px/1 var(--body); color: var(--navy);
-  background: rgba(255,255,255,.92); border: 1.5px solid #c7d2de; border-radius: 999px; padding: 9px 16px; cursor: pointer;
+/* ---------------------------------------------------------------- demo video button (inside the slide, so it scales and turns with it) */
+#video-btn { position: absolute; right: 40px; top: 30px; z-index: 30; font: 600 19px/1 var(--body); color: var(--navy);
+  background: rgba(255,255,255,.92); border: 2px solid #c7d2de; border-radius: 999px; padding: 12px 22px; cursor: pointer;
   box-shadow: 0 4px 14px rgba(16,42,67,.10); }
 #video-btn:hover { border-color: var(--blue); color: var(--blue); }
-body.static #video-btn, .static #video-btn { display: none; }
+
+/* ---------------------------------------------------------------- phones and tablets */
+html, body { touch-action: manipulation; overscroll-behavior: none; -webkit-tap-highlight-color: transparent; }
+#touchnav { display: none; position: absolute; left: 50%; bottom: 30px; transform: translateX(-50%); z-index: 30; gap: 28px; }
+#touchnav button { width: 104px; height: 104px; border-radius: 50%; border: 2px solid #c7d2de; background: rgba(255,255,255,.94);
+  color: var(--navy); font: 700 64px/1 var(--head); display: grid; place-items: center; padding-bottom: 8px;
+  box-shadow: 0 6px 18px rgba(16,42,67,.14); }
+body.touch #touchnav { display: flex; }
+body.touch #video-btn { font-size: 34px; padding: 18px 32px; border-width: 3px; }
+body.touch #help { display: none; }
+#rotate-hint { display: none; position: absolute; left: 50%; top: 40px; transform: translateX(-50%); z-index: 31; background: var(--navy); color: #fff;
+  font: 600 34px/1.2 var(--body); padding: 20px 36px; border-radius: 999px; pointer-events: none; opacity: 0; transition: opacity .6s; }
+body.rotated #rotate-hint { display: block; }
+body.rotated.hint-on #rotate-hint { opacity: 1; }
+body.rotated #video-overlay video { width: 88vh; max-height: 92vw; max-width: none; transform: rotate(90deg); }

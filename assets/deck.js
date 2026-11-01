@@ -12,7 +12,7 @@
   var trackerLbl = document.getElementById("tracker-lbl");
   var overlay = document.getElementById("video-overlay");
   var video = document.getElementById("demo-video");
-  var reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var reduced = /[?&]calm/.test(location.search); // motion is part of the story; add ?calm to the link to turn it off
 
   var STORY = ["The designer describes the part.", "Similar past models are found.", "The design is checked.", "Options are suggested.",
                "The engineer approves, and CATIA updates a copy.", "The assembly is checked.", "The design is checked against its simulation."];
@@ -28,11 +28,24 @@
   }
 
   // ---------------------------------------------------------- scale to window
+  // phones and tablets: touch controls; a phone held upright shows the slide turned sideways so it fills the screen
+  var touch = (window.matchMedia && matchMedia("(pointer: coarse)").matches) || ("ontouchstart" in window);
+  if (touch) document.body.classList.add("touch");
+  var rotated = false;
   function fit() {
-    var k = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
-    stage.style.transform = "translate(-50%, -50%) scale(" + k + ")";
+    var w = window.innerWidth, h = window.innerHeight;
+    rotated = touch && h > w;
+    document.body.classList.toggle("rotated", rotated);
+    if (rotated) {
+      var kr = Math.min(h / 1920, w / 1080);
+      stage.style.transform = "translate(-50%, -50%) rotate(90deg) scale(" + kr + ")";
+    } else {
+      var k = Math.min(w / 1920, h / 1080);
+      stage.style.transform = "translate(-50%, -50%) scale(" + k + ")";
+    }
   }
   window.addEventListener("resize", fit);
+  window.addEventListener("orientationchange", function () { setTimeout(fit, 150); });
   fit();
 
   // ---------------------------------------------------------- typing
@@ -261,7 +274,29 @@
       case "?": case "h": case "H": document.body.classList.toggle("show-help"); break;
     }
   });
-  stage.addEventListener("click", function () { next(); });
+  var swiped = false;
+  stage.addEventListener("click", function () { if (swiped) return; next(); });
+  // swipe: left = next, right = back (in the slide's own direction, also when it is turned sideways)
+  var t0 = null;
+  document.addEventListener("touchstart", function (e) {
+    if (overlay.classList.contains("open") || e.touches.length !== 1) { t0 = null; return; }
+    t0 = { x: e.touches[0].clientX, y: e.touches[0].clientY }; t0.lx = t0.x; t0.ly = t0.y;
+  }, { passive: true });
+  document.addEventListener("touchmove", function (e) {
+    if (t0 && e.touches.length === 1) { t0.lx = e.touches[0].clientX; t0.ly = e.touches[0].clientY; }
+  }, { passive: true });
+  document.addEventListener("touchend", function (e) {
+    if (!t0) return;
+    var dx = t0.lx - t0.x, dy = t0.ly - t0.y; t0 = null;
+    var along = rotated ? dy : dx, across = rotated ? dx : dy;
+    if (Math.abs(along) > 45 && Math.abs(along) > Math.abs(across) * 1.3) {
+      swiped = true; setTimeout(function () { swiped = false; }, 450);
+      if (along < 0) next(); else prev();
+    }
+  }, { passive: true });
+  document.querySelectorAll("#touchnav button").forEach(function (b) {
+    b.addEventListener("click", function (e) { e.stopPropagation(); if (b.dataset.nav === "prev") prev(); else next(); });
+  });
   stage.addEventListener("contextmenu", function (e) { e.preventDefault(); prev(); });
   overlay.addEventListener("click", function (e) { if (e.target === overlay) toggleVideo(false); });
   var vbtn = document.getElementById("video-btn");
@@ -278,6 +313,8 @@
     show(h[0], h[1], /[?&]static\b/.test(location.search) ? 0 : 1);
     document.body.classList.add("show-help");
     setTimeout(function () { document.body.classList.remove("show-help"); }, 4000);
+    document.body.classList.add("hint-on");
+    setTimeout(function () { document.body.classList.remove("hint-on"); }, 4500);
   }
   var fontsReady = document.fonts && document.fonts.load
     ? Promise.all([document.fonts.load('700 54px "MontDeck"'), document.fonts.load('400 24px "PlexDeck"'), document.fonts.load('600 20px "PlexDeck"'), document.fonts.load('400 22px "PlexMonoDeck"')]).catch(function () {})

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>CATIA Design Intelligence — FORVIA HELLA proposal</title>
   <link rel="stylesheet" href="assets/deck.css" />
   <script src="assets/lib/three.min.js"></script>
@@ -10,6 +10,9 @@
 </head>
 <body>
 <div id="stage">
+  <button id="video-btn" type="button" title="Play the demo video (V)">▶ Demo video</button>
+  <div id="touchnav"><button type="button" data-nav="prev" aria-label="Previous">‹</button><button type="button" data-nav="next" aria-label="Next">›</button></div>
+  <div id="rotate-hint">Turn your phone sideways for the full view.</div>
   <canvas id="world"></canvas>
 
   <!-- labels pinned to 3D objects (positioned by world3d.js) -->
@@ -382,7 +385,6 @@
 <div id="notes"><h5>Speaker notes</h5><div id="notes-body"></div></div>
 <div id="help">→ / Space next · ← back · F fullscreen · N notes · V demo video · B blackout</div>
 <div id="blackout"></div>
-<button id="video-btn" type="button" title="Play the demo video (V)">▶ Demo video</button>
 <div id="video-overlay"><video id="demo-video" src="assets/media/demo_walkthrough.mp4" poster="assets/media/demo_poster.jpg" muted controls playsinline preload="metadata"></video></div>
 
 <script src="assets/world3d.js"></script>
