@@ -149,7 +149,8 @@
       var r = btn.getBoundingClientRect(), sr = stage.getBoundingClientRect(), k = sr.width / 1920;
       var tx = (r.left - sr.left) / k + 60, ty = (r.top - sr.top) / k + 26;
       function done() { btn.classList.add("done"); btn.textContent = "✓ Approved by the engineer"; }
-      if (!animate || reduced) { done(); gsap.set(cur, { opacity: 0 }); return; }
+      // the click plays once, when the approval step is reached; later steps only show the approved state
+      if (!animate || reduced || st !== 1) { gsap.killTweensOf([cur, btn]); done(); gsap.set(cur, { opacity: 0 }); gsap.set(btn, { scale: 1 }); return; }
       gsap.timeline()
         .fromTo(cur, { opacity: 0, x: tx + 260, y: ty + 220 }, { opacity: 1, duration: 0.2 })
         .to(cur, { x: tx, y: ty, duration: 0.9, ease: "power2.inOut" })
