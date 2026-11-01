@@ -238,7 +238,7 @@
   function toggleVideo(open) {
     var on = open === undefined ? !overlay.classList.contains("open") : open;
     overlay.classList.toggle("open", on);
-    if (!on) video.pause();
+    if (on) { var pr = video.play(); if (pr && pr.catch) pr.catch(function () {}); } else video.pause();
   }
 
   document.addEventListener("keydown", function (e) {
@@ -264,6 +264,8 @@
   stage.addEventListener("click", function () { next(); });
   stage.addEventListener("contextmenu", function (e) { e.preventDefault(); prev(); });
   overlay.addEventListener("click", function (e) { if (e.target === overlay) toggleVideo(false); });
+  var vbtn = document.getElementById("video-btn");
+  if (vbtn) vbtn.addEventListener("click", function (e) { e.stopPropagation(); toggleVideo(true); });
 
   // ---------------------------------------------------------- boot
   function parseHash() {

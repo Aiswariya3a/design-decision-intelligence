@@ -491,3 +491,10 @@ body.blackout #blackout { display: block; }
 .mk-join p b { color: var(--blue); }
 .mk-svg { width: 760px; height: auto; display: block; }
 .mk-svg text { font-family: var(--body, "IBM Plex Sans", sans-serif); } .mk-svg rect + text { font-family: var(--head); }
+
+/* ---------------------------------------------------------------- demo video button (for viewers of the public link) */
+#video-btn { position: fixed; right: 22px; top: 18px; z-index: 50; font: 600 15px/1 var(--body); color: var(--navy);
+  background: rgba(255,255,255,.92); border: 1.5px solid #c7d2de; border-radius: 999px; padding: 9px 16px; cursor: pointer;
+  box-shadow: 0 4px 14px rgba(16,42,67,.10); }
+#video-btn:hover { border-color: var(--blue); color: var(--blue); }
+body.static #video-btn, .static #video-btn { display: none; }
