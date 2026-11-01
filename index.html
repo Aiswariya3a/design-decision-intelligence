@@ -1,0 +1,390 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CATIA Design Intelligence — FORVIA HELLA proposal</title>
+  <link rel="stylesheet" href="assets/deck.css" />
+  <script src="assets/lib/three.min.js"></script>
+  <script src="assets/lib/gsap.min.js"></script>
+</head>
+<body>
+<div id="stage">
+  <canvas id="world"></canvas>
+
+  <!-- labels pinned to 3D objects (positioned by world3d.js) -->
+  <div id="anchors">
+    <div id="a-dim" class="anchor-label dim-label">40.0 mm</div>
+    <div id="a-dia" class="anchor-label dim-label">Ø 5.0 mm</div>
+    <div id="a-copy" class="anchor-label tag3d blue">Current CATIA design</div>
+    <div id="a-preview" class="anchor-label tag3d">Option B preview · nothing changed yet</div>
+    <div id="a-ghost" class="anchor-label tag3d fail">50 mm is outside the allowed area.</div>
+    <div id="a-lock" class="anchor-label tag3d grey">Simulated model · run S-012</div>
+    <div id="a-hist" class="anchor-label tag3d fail">Gap −1.5 mm · clash</div>
+    <div id="a-hdim" class="anchor-label dim-label">40.0 mm</div>
+    <div id="a-boss" class="anchor-label tag3d">Boss on the mating part</div>
+    <div id="a-slab" class="anchor-label tag3d blue">Knowledge memory</div>
+    <div id="a-stage-0" class="anchor-label stage-label on"><span class="sn">Stage 0</span><h3>Discovery</h3><p>Choose one part, its requirements and how we measure success.</p></div>
+    <div id="a-stage-1" class="anchor-label stage-label"><span class="sn">Stage 1</span><h3>Proof of concept</h3><p>Show all four capabilities on that part.</p></div>
+    <div id="a-stage-2" class="anchor-label stage-label"><span class="sn">Stage 2</span><h3>Pilot with engineers</h3><p>Real projects with a small group of engineers.</p></div>
+    <div id="a-stage-3" class="anchor-label stage-label"><span class="sn">Stage 3</span><h3>Wider rollout</h3><p>More part families, rules and connections.</p></div>
+  </div>
+
+  <!-- 01 TITLE ============================================================ -->
+  <section class="slide" id="s-title" data-world="title" data-bg="white"
+    data-notes="We're from the School of Innovation. In about fifteen minutes we'll follow one small mechanical part through a design change, and show how earlier engineering knowledge, CATIA and checks can work together. The part we use is synthetic; it is not a HELLA component.">
+    <img class="photo" src="assets/media/headlamp_front.webp" alt="Illustrative headlamp image" data-anim />
+    <h1 data-anim>Design Decision<br>Intelligence</h1>
+    <p class="lede" data-anim>An assistant inside CATIA V5 that brings past models, requirements and simulation evidence together, so designers can make feasible decisions faster.</p>
+    <div class="accent-bar" data-anim></div>
+    <div class="who" data-anim><span class="who-name">School of Innovation</span><span class="who-sep">·</span><span>A proposal for FORVIA HELLA, 30 October 2026</span></div>
+    <p class="disclaimer" data-anim>Disclaimer: the mounting plate, its limits and the past design cases shown in this presentation are made up for demonstration. They are not HELLA parts, data or specifications. Headlamp images are illustrative only.</p>
+  </section>
+
+  <!-- 02 WHAT WE HEARD ==================================================== -->
+  <section class="slide" id="s-heard" data-world="heard" data-bg="grey" data-steps="2"
+    data-notes="From our first discussion and our own research, these are the two things we think would make day-to-day design work less tiring. Please correct us if we got it wrong. [click] First, every requirement in one place for each design decision: strength, heat, fixing, assembly and vibration all shape the same choice. [click] Second, past models that suggest the next design: several workable options inside CATIA V5, with a clear recommendation.">
+    <h2 data-anim>What would make design work less tiring</h2>
+    <p class="small" data-anim style="margin-top:10px">Based on our first discussion and our own research.</p>
+
+    <div class="stmt" id="hs-1" data-hs="1" style="top:330px">
+      <div class="num">01</div>
+      <div class="body">
+        <div class="say" data-split>Engineers want <span class="hl">every requirement</span> in one place for each decision.</div>
+        <div class="ctx">Strength, heat, fixing, assembly and vibration all shape the same design choice.</div>
+      </div>
+    </div>
+    <div class="stmt" id="hs-2" data-hs="2" style="top:620px">
+      <div class="num">02</div>
+      <div class="body">
+        <div class="say" data-split>They want <span class="hl">past models</span> to suggest the next design.</div>
+        <div class="ctx">Several workable options inside CATIA V5, with a clear recommendation.</div>
+      </div>
+    </div>
+
+</section>
+
+  <!-- 03 PROBLEM =========================================================== -->
+  <section class="slide" id="s-problem" data-world="problem" data-bg="white"
+    data-notes="Every engineer here knows this. The feature tree shows Hole_Spacing = 40, but not why it is 40, or what happened when someone tried 38. That lives in review minutes, change notices or someone's memory. The last point is our hypothesis; we'd like to check it with you, not assume it.">
+    <img class="photo" src="assets/media/headlamp_exploded.webp" alt="Illustrative exploded headlamp" data-anim />
+    <svg class="leaders" viewBox="0 0 1920 1080" width="1920" height="1080">
+      <g data-step="1"><path d="M1270 250 C 1330 270, 1360 330, 1381 383" /><circle cx="1381" cy="383" r="7" /></g>
+      <g data-step="2"><path d="M1640 790 C 1600 730, 1540 690, 1521 632" /><circle cx="1521" cy="632" r="7" /></g>
+      <g data-step="3"><path d="M1240 905 C 1330 890, 1390 840, 1418 786" /><circle cx="1418" cy="786" r="7" /></g>
+    </svg>
+    <div class="card doc" style="left:1000px; top:180px" data-step="1"><span class="q">?</span><h3>Change notice</h3><p>Why did this tab move?</p></div>
+    <div class="card doc" style="left:1560px; top:800px" data-step="2"><span class="q">?</span><h3>Review minutes</h3><p>Was there a screw clearance problem?</p></div>
+    <div class="card doc" style="left:990px; top:870px" data-step="3"><span class="q">?</span><h3>Engineer’s note</h3><p>“We changed it because…”</p></div>
+    <div class="left col">
+      <h2 data-anim>The model shows <em>how</em>.<br>Not <em>why</em>.</h2>
+      <ul class="points">
+        <li data-step="1"><span class="badge">01</span><span>One design decision depends on <b>many requirements</b>: strength, heat, fixing, assembly and vibration.</span></li>
+        <li data-step="2"><span class="badge">02</span><span>The answers sit in <b>different places</b>: CAD models, simulations, standards and past projects.</span></li>
+        <li data-step="3"><span class="badge">03</span><span>After each change, engineers <b>repeat the checks</b> and confirm that simulations still apply.</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 04 MARKET TODAY ====================================================== -->
+  <section class="slide" id="s-market" data-world="market" data-bg="grey"
+    data-notes="This is what the market offers today, from public information up to October 2026. The big CAD vendors all have AI assistants now, but each one works on its own newer platform: Dassault's on cloud 3DEXPERIENCE, Siemens' on NX, PTC's on Creo. For CATIA V5, the only established tool is OnePart, which finds similar parts by shape but not the reasons behind them. Community connectors exist but are experimental. FORVIA's Raiqon partnership covers requirements, not CAD. We found no published, measured AI pilot inside CATIA V5. That is the gap our proposal addresses. Vendor claims are their own; we found little independent evidence of results.">
+    <h2 data-anim>What the market offers today</h2>
+    <p class="mk-src" data-anim>Public information up to October 2026.</p>
+    <div class="mkv">
+      <div class="mk-col mk-c1" data-step="1">
+        <div class="mk-h"><span class="mk-ic no">✕</span><div><b>Only on their own platforms</b><span>Strong AI, but not for CATIA V5.</span></div></div>
+        <div class="mk-tiles four">
+          <div class="mt"><span class="mt-v">Dassault Systèmes</span><b>AURA, LEO, MARIE</b><span class="mt-d">Assistants for the 3DEXPERIENCE cloud.</span></div>
+          <div class="mt"><span class="mt-v">Siemens</span><b>NX Copilots</b><span class="mt-d">Help inside NX and Teamcenter.</span></div>
+          <div class="mt"><span class="mt-v">PTC</span><b>Creo AI</b><span class="mt-d">Guidance inside Creo and Windchill.</span></div>
+          <div class="mt"><span class="mt-v">Autodesk</span><b>Generative design</b><span class="mt-d">New shapes inside Autodesk tools.</span></div>
+        </div>
+      </div>
+      <div class="mk-col mk-c2" data-step="2">
+        <div class="mk-h"><span class="mk-ic na">–</span><div><b>Requirements only</b><span>Works before the design starts.</span></div></div>
+        <div class="mk-tiles">
+          <div class="mt"><span class="mt-v">Raiqon, with FORVIA</span><b>AI in IBM DOORS</b><span class="mt-d">Finds similar requirements.</span></div>
+        </div>
+      </div>
+      <div class="mk-col mk-c3" data-step="2">
+        <div class="mk-h"><span class="mk-ic yes">✓</span><div><b>Works with CATIA V5</b><span>Useful, but only one piece each.</span></div></div>
+        <div class="mk-tiles">
+          <div class="mt"><span class="mt-v">Dassault Systèmes</span><b>OnePart</b><span class="mt-d">Finds similar parts, not the reasons.</span></div>
+          <div class="mt"><span class="mt-v">Open-source</span><b>AI connectors</b><span class="mt-d">Drive CATIA V5, still experimental.</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="mk-join" data-step="3">
+      <p>Nothing on the market yet brings these <b>three together</b> inside CATIA V5. That is what we propose.</p>
+      <svg viewBox="0 0 900 200" class="mk-svg" aria-hidden="true">
+        <g class="mk-lines" fill="none" stroke="#1570ef" stroke-width="3">
+          <path d="M250 30 C 470 30, 520 100, 660 100"/>
+          <path d="M250 100 L 660 100"/>
+          <path d="M250 170 C 470 170, 520 100, 660 100"/>
+        </g>
+        <g font-family="IBM Plex Sans, sans-serif" font-size="24" fill="#102a43" text-anchor="end">
+          <text x="226" y="38">Past models</text>
+          <text x="226" y="108">Requirement checks</text>
+          <text x="226" y="178">Simulation evidence</text>
+        </g>
+        <g fill="#1570ef"><circle cx="250" cy="30" r="9"/><circle cx="250" cy="100" r="9"/><circle cx="250" cy="170" r="9"/></g>
+        <rect x="660" y="52" width="230" height="96" rx="14" fill="#102a43"/>
+        <text x="775" y="111" text-anchor="middle" font-family="Montserrat, sans-serif" font-weight="700" font-size="30" fill="#fff">CATIA V5</text>
+      </svg>
+    </div>
+  </section>
+
+  <!-- 04 MEET THE EXAMPLE ================================================== -->
+  <section class="slide" id="s-meet" data-world="meet" data-bg="white"
+    data-notes="We chose something deliberately simple, so you can check every number in your head. Same dimensions as the live demo. The limits in the right-hand column are demo values, not your specifications.">
+    <img class="photo zoom" src="assets/media/headlamp_exploded.webp" alt="" />
+    <div class="left col" style="width:840px">
+      <h2 data-anim>One worked example:<br>a <em>synthetic</em> mounting plate</h2>
+      <div class="mid">
+        <p class="big-sub" data-anim>It is 80 × 30 × 3 mm and has two 5.5 mm holes, 40 mm apart.</p>
+        <div class="ptable" data-anim>
+          <div class="row head"><span>Setting in CATIA</span><span>Now</span><span>Allowed range</span></div>
+          <div class="row"><span class="k">Hole_Spacing</span><span>40.000 mm</span><span>38 – 46 mm</span></div>
+          <div class="row"><span class="k">Hole_Diameter</span><span>5.500 mm</span><span>5.9 – 6.1 mm</span></div>
+          <div class="row"><span class="k">Bracket_Thickness</span><span>3.000 mm</span><span>not changed</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 06 STEP 1: REQUIREMENTS IN ========================================= -->
+  <section class="slide" id="s-ask" data-world="ask" data-bg="grey" data-track="1,1,1"
+    data-notes="Everything starts inside CATIA V5. The designer describes the part's function, its requirements and the assembly it goes into, in plain words or with a macro button. The assistant reads the part name and the named parameters from the open model. It does not send geometry anywhere.">
+    <div class="rcol col">
+      <h2 data-anim>The designer describes what the part must do</h2>
+      <div class="mid">
+        <div class="bubble-wrap big" data-step="1"><div class="bubble" data-type="Bracket for the LED module: carries the module, sits near the hot LED area, fixed with two screws, must not resonate."></div></div>
+        <div data-step="2">
+          <div class="status-line big">The assistant reads these details from the open CATIA model:</div>
+          <div class="ctx big"><span class="chip">Bracket_Demo.CATPart</span><span class="chip">Hole_Spacing = 40 mm</span><span class="chip">Hole_Diameter = 5.5 mm</span><span class="chip">Bracket_Thickness = 3 mm</span></div>
+          <p class="note">It reads names and values only, and nothing is changed.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" id="s-cases" data-world="cases" data-bg="grey" data-track="2,2,2"
+    data-notes="[click 1] The search found three earlier cases, but two are filtered out: one is from a different product family, the other was replaced by a newer revision. Cases the project is not allowed to see never appear at all. One case remains, with its source, revision and a caution about the material. [click 2] This shows the two saved revisions of that case side by side in time: at 40 mm the screw head overlaps the boss on the mating part; at 45 mm there is a gap. The reason comes from the design review minutes. These cases are invented for the demo; we did not use any HELLA data. History is not a rule: the engineer decides if it applies. Two things this depends on, which Stage 0 checks: the reason must have been written down somewhere, such as review minutes or change notices, and earlier revisions must be kept in the data management system.">
+    <h2 data-anim style="max-width:1696px">Similar past models, and the reason behind them</h2>
+    <div class="cases-left">
+      <p class="q" data-anim>The designer asked: “Have similar mounting points caused clearance problems before?”</p>
+      <div class="found" data-anim><b>The assistant found 3 earlier cases.</b><span class="filters" data-step="1">Then it removed the ones that do not apply.</span></div>
+      <div class="card cand" data-anim data-dim="1">
+        <div class="row1"><h3>KM-009 · Plate thickness changed from 2 to 3 mm</h3></div>
+        <div class="out" data-step="1">✕ Removed, because it is from a different product family.</div>
+        <div class="strike" data-strike="1"></div>
+      </div>
+      <div class="card cand" data-anim data-dim="1">
+        <div class="row1"><h3>KM-011 · A note about the hole pattern</h3></div>
+        <div class="out" data-step="1">✕ Removed, because a newer revision replaced it.</div>
+        <div class="strike" data-strike="1"></div>
+      </div>
+      <div class="card cand keep" data-anim data-glow="1">
+        <div class="row1"><h3>KM-014 · Hole spacing changed from 40 to 45 mm</h3></div>
+        <p>The record says the screw head hit a boss on the mating part.</p>
+        <div class="chips"><span class="chip">Source: design review minutes DR-2</span><span class="chip">Revision D</span><span class="chip">Same plate family</span></div>
+        <div class="caution" data-step="1">⚠ Be careful: the earlier part was made of a different material.</div>
+      </div>
+      <p class="hist-note" data-step="2">A past case is not a rule. The engineer decides if it applies.</p>
+    </div>
+    <div class="replay" data-step="2">
+      <div class="replay-title">KM-014 before and after, from saved revisions</div>
+      <div class="beats">
+        <div class="beat" id="beat-1"><span class="badge">1</span><span>At 40 mm, the screw head <b>overlaps</b> the boss.</span></div>
+        <div class="beat" id="beat-2"><span class="badge">2</span><span>The holes were moved apart to <b>45 mm</b>.</span></div>
+        <div class="beat" id="beat-3"><span class="badge">3</span><span>Now there is a <b>gap</b>, so the parts no longer touch.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 08 STEP 3: IN-DESIGN CHECK =========================================== -->
+  <section class="slide" id="s-check" data-world="check" data-bg="grey" data-track="3,3,3"
+    data-notes="The assistant checks the part against the mapped requirements and sorts every result into pass, fail, review or not checked. A fail is only shown for a clear, measured rule. Heat comes from thermal analysis, so it is shown as linked, not guessed.">
+    <h2 data-anim style="max-width:860px">The design is checked as it changes</h2>
+    <div class="rq-list">
+      <div class="rq" data-step="1"><span class="st fail">Fail</span><div><b>MNT 01 · The mounting hole must be 6.0 ± 0.1 mm.</b><span>It measures 5.5 mm.</span></div></div>
+      <div class="rq" data-step="1"><span class="st review">Review</span><div><b>MNT 02 · Tool access needs at least 8 mm of clearance.</b><span>It measures 7.2 mm.</span></div></div>
+      <div class="rq" data-step="1"><span class="st review">Review</span><div><b>PLS 03 · The boss wall follows the design guide.</b><span>It is close to the limit.</span></div></div>
+      <div class="rq" data-step="2"><span class="st pass">Pass</span><div><b>ASM 05 · There is no hard clash with the mating part.</b><span>No contact was found.</span></div></div>
+      <div class="rq" data-step="2"><span class="st pass">Pass</span><div><b>VIB 04 · The approved vibration analysis covers this design.</b><span>The model matches the analysis.</span></div></div>
+      <div class="rq" data-step="2"><span class="st linked">Linked</span><div><b>THM 06 · The LED area stays within its temperature limit.</b><span>This comes from the thermal analysis.</span></div></div>
+    </div>
+  </section>
+
+  <!-- 09 STEP 4: OPTIONS ===================================================== -->
+  <section class="slide" id="s-options" data-world="options" data-bg="grey" data-track="4,4,4"
+    data-notes="The assistant builds three options from the approved bracket by changing only approved parameters within their limits. It compares them against the same requirements and recommends the one that meets them all with the smallest change. The engineer still decides.">
+    <h2 data-anim style="max-width:860px">Options from past designs, with a clear recommendation</h2>
+    <div class="opt" data-step="1">
+      <div class="opt-row opt-head"><div></div><div>A<span>Larger holes</span></div><div class="best">B<span>Larger holes, wider spacing</span></div><div>C<span>Larger holes, thicker boss</span></div></div>
+      <div class="opt-row"><div>Hole diameter</div><div class="y">✓</div><div class="y best">✓</div><div class="y">✓</div></div>
+      <div class="opt-row"><div>Tool clearance</div><div class="r">7.2 mm</div><div class="y best">8.6 mm ✓</div><div class="r">7.0 mm</div></div>
+      <div class="opt-row"><div>Boss wall</div><div class="r">Review</div><div class="y best">✓</div><div class="y">✓</div></div>
+      <div class="opt-row"><div>No clash</div><div class="y">✓</div><div class="y best">✓</div><div class="y">✓</div></div>
+      <div class="opt-row"><div>Mass change</div><div>0 g</div><div class="best">0 g</div><div>+3 g</div></div>
+    </div>
+    <p class="opt-note" data-step="2"><b>Option B</b> meets every mapped requirement with the smallest change, so the assistant recommends it. Options only use approved parameters within their limits.</p>
+  </section>
+
+  <!-- 10 STEP 5: APPROVE AND APPLY =========================================== -->
+  <section class="slide" id="s-apply" data-world="apply" data-bg="grey" data-track="5,5,5"
+    data-notes="Nothing changes until the engineer approves. Then the assistant applies option B to a working copy in CATIA V5 and reads the values back from the model to confirm them. The original part stays as it was.">
+    <h2 data-anim style="margin-left:auto; width:800px">The engineer approves, and CATIA updates a copy</h2>
+    <div class="panel" style="top:330px; width:800px">
+      <div class="card" data-anim>
+        <div class="kick">Option B</div>
+        <div class="plain">Hole_Diameter changes from 5.5 mm to 6.0 mm.<br>Hole_Spacing changes from 40 mm to 45 mm.</div>
+        <div class="btn" id="approve">Approve change</div>
+      </div>
+      <div class="card pass" style="margin-top:22px" data-step="2">
+        <div class="kick" style="color:var(--pass)">Read back from CATIA</div>
+        <div class="plain">Hole_Diameter is now 6.000 mm. ✓<br>Hole_Spacing is now 45.000 mm. ✓<br>The change is saved in a working copy, and the original is kept.</div>
+      </div>
+    </div>
+    <svg id="cursor" viewBox="0 0 24 24"><path d="M3 2 L3 20 L8 15 L11.5 22 L14.5 20.6 L11 14 L18 14 Z" fill="#102a43" stroke="#fff" stroke-width="1.4" /></svg>
+  </section>
+
+  <!-- 11 STEP 6: ASSEMBLY CHECK ============================================= -->
+  <section class="slide" id="s-assembly" data-world="assembly" data-bg="grey" data-track="6,6"
+    data-notes="With the new geometry, the assistant checks the assembly on the parts the engineer selects: tool access, clashes and the fastener fit. These checks run at checkpoints, not on every mouse move, so CATIA stays quick.">
+    <h2 data-anim style="max-width:860px">The assembly is checked before review</h2>
+    <div class="asm-list">
+      <div class="asm" data-step="1"><span class="ok">✓</span><div><b>Tool access</b><span>The screwdriver has 8.6 mm of clearance, and 8 mm is needed.</span></div></div>
+      <div class="asm" data-step="1"><span class="ok">✓</span><div><b>No clash</b><span>The bracket does not touch the mating part.</span></div></div>
+      <div class="asm" data-step="1"><span class="ok">✓</span><div><b>Fastener fit</b><span>The screw head clears the boss on the mating part.</span></div></div>
+      <p class="note" data-step="1">Checks run on the selected parts at checkpoints, so CATIA stays quick.</p>
+    </div>
+  </section>
+
+  <!-- 12 STEP 7: DESIGN VS SIMULATION ======================================== -->
+  <section class="slide" id="s-evidence" data-world="evidence" data-bg="grey" data-track="7,7,7"
+    data-notes="Finally, the assistant compares the current design with the model that was simulated. Here the holes changed after the vibration analysis, so that result no longer applies, and a new analysis is requested before review. Nobody reviews with an out-of-date result.">
+    <h2 data-anim style="max-width:1500px">The design is checked against its simulation</h2>
+    <div class="ev" data-step="1">
+      <div class="ev-row ev-head"><div></div><div>Simulated model</div><div>Current design</div><div></div></div>
+      <div class="ev-row"><div>Hole spacing</div><div>40.0 mm</div><div>45.0 mm</div><div class="x">Changed</div></div>
+      <div class="ev-row"><div>Hole diameter</div><div>5.5 mm</div><div>6.0 mm</div><div class="x">Changed</div></div>
+      <div class="ev-row"><div>Material, loads and fixings</div><div>Same</div><div>Same</div><div class="y">Match</div></div>
+    </div>
+    <p class="ev-note" data-step="2">The vibration result <b>VIB 04</b> no longer matches this design, so the assistant asks for a new analysis before review.</p>
+  </section>
+
+  <!-- 13 ARCHITECTURE ======================================================= -->
+  <section class="slide" id="s-arch" data-world="arch" data-bg="grey"
+    data-notes="Plain English: one assistant inside CATIA V5 and four services behind it. The AI understands the request and explains results; rules and CATIA itself do every measurement; the engineer approves every change. The connection uses CATIA V5's official automation interface and runs on HELLA's own or approved systems.">
+    <h2 data-anim>How it is built</h2>
+    <p class="sub" data-anim>The AI suggests and explains. Rules and CATIA measure. The engineer decides.</p>
+    <div class="arch" id="arch">
+      <div class="arch-plane">
+        <svg width="1696" height="600" viewBox="0 0 1696 600">
+          <path class="flowline" d="M420 50 H638" /><path class="flowline" d="M1058 50 H1276" />
+          <path class="flowline" d="M848 112 C 848 170, 190 170, 190 228" /><path class="flowline" d="M848 112 C 848 170, 629 170, 629 228" />
+          <path class="flowline" d="M848 112 C 848 170, 1068 170, 1068 228" /><path class="flowline" d="M848 112 C 848 170, 1506 170, 1506 228" />
+          <path class="flowline" d="M190 352 V 458" /><path class="flowline" d="M629 352 V 458" /><path class="flowline" d="M1068 352 V 458" /><path class="flowline" d="M1506 352 V 458" />
+          <path class="pulse" d="M848 112 C 848 170, 190 170, 190 228" /><path class="pulse" d="M848 112 C 848 170, 1068 170, 1068 228" />
+          <path class="pulse" d="M629 352 V 458" /><path class="pulse" d="M1506 352 V 458" /><path class="pulse" d="M1058 50 H1276" />
+        </svg>
+        <div class="tile white" data-step="1" style="left:0; top:0; width:420px"><h4>Engineer in CATIA V5</h4><p>Describes the part and asks.</p></div>
+        <div class="tile navy" data-step="1" style="left:638px; top:0; width:420px"><h4>Assistant</h4><p>Understands the request and explains results.</p></div>
+        <div class="tile white" data-step="1" style="left:1276px; top:0; width:420px"><h4>Engineer approves</h4><p>Nothing changes without approval.</p></div>
+        <div class="tile" data-step="2" style="left:0; top:228px; width:380px"><h4>Past models</h4><p>Finds similar designs with their source.</p></div>
+        <div class="tile" data-step="2" style="left:439px; top:228px; width:380px"><h4>Requirement rules</h4><p>Checks limits, units and tolerances.</p></div>
+        <div class="tile" data-step="2" style="left:878px; top:228px; width:380px"><h4>Option builder</h4><p>Builds variants from approved parameters.</p></div>
+        <div class="tile" data-step="2" style="left:1316px; top:228px; width:380px"><h4>Simulation evidence</h4><p>Tells whether results still apply.</p></div>
+        <div class="tile white" data-step="3" style="left:0; top:458px; width:1696px"><h4>CATIA V5 connection</h4><p>Reads parameters, measures and updates a working copy through CATIA's official automation interface.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 14 REQUIREMENTS BROUGHT TOGETHER ====================================== -->
+  <section class="slide" id="s-reqs" data-world="reqs" data-bg="white"
+    data-notes="These are the requirement families that shape a lamp part. The first version checks the ones that can be measured from the model and approved rules. Heat, vibration, optics and sealing come from analysis and tests, and the assistant shows whether those results still apply to the current design.">
+    <h2 data-anim>Every requirement in one place</h2>
+    <div class="rg">
+      <div class="rg-item" data-step="1"><span class="mk full"></span><b>Mechanical</b><span>Parameters, mass and interfaces.</span></div>
+      <div class="rg-item" data-step="1"><span class="mk full"></span><b>Fixing and joints</b><span>Screw, boss and clip rules.</span></div>
+      <div class="rg-item" data-step="1"><span class="mk full"></span><b>Tolerances</b><span>Predefined tolerance chains and datums.</span></div>
+      <div class="rg-item" data-step="1"><span class="mk full"></span><b>Plastic part design</b><span>Wall, rib and boss rules.</span></div>
+      <div class="rg-item" data-step="1"><span class="mk full"></span><b>Tooling</b><span>Draft values and approved tooling patterns.</span></div>
+      <div class="rg-item" data-step="1"><span class="mk full"></span><b>Assembly</b><span>Clearance, clash and tool access.</span></div>
+      <div class="rg-item" data-step="2"><span class="mk half"></span><b>Vibration</b><span>Shows whether the analysis still applies.</span></div>
+      <div class="rg-item" data-step="2"><span class="mk half"></span><b>Thermal</b><span>Links the design to thermal results.</span></div>
+      <div class="rg-item" data-step="2"><span class="mk half"></span><b>Optical</b><span>Keeps optical datums and positions in view.</span></div>
+      <div class="rg-item" data-step="2"><span class="mk half"></span><b>Environmental</b><span>Links sealing and vent rules to test results.</span></div>
+    </div>
+    <div class="rg-legend" data-anim><span><span class="mk full"></span>Checked by the first version</span><span><span class="mk half"></span>Linked to analysis and test results</span></div>
+  </section>
+
+  <!-- 15 ROADMAP ============================================================ -->
+  <section class="slide" id="s-roadmap" data-world="roadmap" data-bg="grey"
+    data-notes="Each stage ends with a decision you control. Discovery picks one part and its requirements. The proof of concept shows the four capabilities on that part. The pilot uses real projects with a small group of engineers. We measure against today's way of working before claiming any savings.">
+    <h2 data-anim style="max-width:1500px">Gated stages. Evidence before scale.</h2>
+    <div class="mstrip" data-step="4">
+      <div class="mhead">How we will measure the pilot <span>We first measure how you work today, then compare.</span></div>
+      <div class="mcols">
+        <div><b>Finding past cases</b><span>Time to find a useful earlier design.</span></div>
+        <div><b>Issues found early</b><span>Problems caught before formal review.</span></div>
+        <div><b>Checking effort</b><span>Minutes spent on each set of checks.</span></div>
+        <div><b>Comparing options</b><span>Time to build and compare variants.</span></div>
+        <div><b>Out-of-date results</b><span>Simulation mismatches caught in time.</span></div>
+        <div><b>Engineer rating</b><span>How useful engineers find it.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 16 BUILT TO BE TRUSTED ================================================ -->
+  <section class="slide" id="s-trust" data-world="trust" data-bg="grey"
+    data-notes="These are the design principles that make engineers comfortable using it. The most important: every number comes from CATIA or an approved rule, and nothing changes without the engineer's approval.">
+    <h2 data-anim>Built to be trusted</h2>
+    <div class="risk-grid">
+        <div class="rk" data-step="1"><span class="rn">01</span><div><b>Numbers come from CATIA and rules</b><span>The AI explains and suggests, and measured values always come from CATIA or approved rules.</span></div></div>
+        <div class="rk" data-step="1"><span class="rn">02</span><div><b>The engineer decides</b><span>Nothing in CATIA changes without approval, and a working copy is always kept.</span></div></div>
+        <div class="rk" data-step="1"><span class="rn">03</span><div><b>Sources are always shown</b><span>Every past case shows where it came from, its revision and its approval.</span></div></div>
+        <div class="rk" data-step="1"><span class="rn">04</span><div><b>Out-of-date results are flagged</b><span>When the design changes, linked simulation results are marked for review.</span></div></div>
+        <div class="rk" data-step="2"><span class="rn">05</span><div><b>Clear alert levels</b><span>Every requirement shows pass, fail, review or linked, so nothing is hidden.</span></div></div>
+        <div class="rk" data-step="2"><span class="rn">06</span><div><b>Data stays protected</b><span>It runs on your own or approved systems, with access rights and an audit trail.</span></div></div>
+        <div class="rk" data-step="2"><span class="rn">07</span><div><b>Read first, then change</b><span>The first version reads and checks, and approved changes are added step by step.</span></div></div>
+        <div class="rk" data-step="2"><span class="rn">08</span><div><b>Built with your engineers</b><span>Rules, screens and alerts are shaped together with the people who use them.</span></div></div>
+    </div>
+  </section>
+
+  <!-- 17 NEXT STEP ========================================================== -->
+  <section class="slide" id="s-close" data-world="close" data-bg="white"
+    data-notes="The next step is small: a short discovery to choose one part, its key requirements and how we measure success. Then we build the proof of concept on that part. Thank you; questions?">
+    <img class="photo" src="assets/media/headlamp_threequarter.webp" alt="Illustrative headlamp image" data-anim />
+    <div class="left col" style="width:900px">
+      <h2 data-anim>Next step:<br>Stage 0 discovery</h2>
+      <div class="mid">
+        <div class="asks">
+          <div class="ask-row" data-step="1"><span class="anum">01</span><span>Approve a short discovery stage.</span></div>
+          <div class="ask-row" data-step="1"><span class="anum">02</span><span>Choose one part and its 10 to 20 key requirements.</span></div>
+          <div class="ask-row" data-step="1"><span class="anum">03</span><span>Share a test CATIA workstation and some sample cases.</span></div>
+          <div class="ask-row" data-step="1"><span class="anum">04</span><span>Agree with us how we will measure success.</span></div>
+        </div>
+        <div class="cta" data-step="2"><span class="btn">Approve Stage 0 discovery</span><span class="cta-note">We can start with sample data.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <div id="tracker">
+    <span class="badge">1</span><span class="badge">2</span><span class="badge">3</span><span class="badge">4</span><span class="badge">5</span><span class="badge">6</span><span class="badge">7</span>
+    <span class="lbl" id="tracker-lbl"></span>
+  </div>
+  <div id="footer"><span>School of Innovation · Design Decision Intelligence</span><span class="num" id="num">01 / 17</span></div>
+</div>
+
+<div id="notes"><h5>Speaker notes</h5><div id="notes-body"></div></div>
+<div id="help">→ / Space next · ← back · F fullscreen · N notes · V demo video · B blackout</div>
+<div id="blackout"></div>
+<div id="video-overlay"><video id="demo-video" src="assets/media/demo_walkthrough.mp4" poster="assets/media/demo_poster.jpg" controls playsinline preload="metadata"></video></div>
+
+<script src="assets/world3d.js"></script>
+<script src="assets/deck.js"></script>
+</body>
+</html>
