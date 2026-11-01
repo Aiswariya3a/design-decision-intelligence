@@ -143,11 +143,6 @@
       gsap.delayedCall(1.8, function () { set(2); });   // holes start moving (World: delay 1.8 s, 2.2 s move)
       gsap.delayedCall(4.0, function () { set(3); });   // clear
     },
-    "s-meet": function (st, animate) {
-      var z = document.querySelector("#s-meet .zoom");
-      if (!animate || reduced) { gsap.set(z, { opacity: 0 }); return; }
-      gsap.fromTo(z, { opacity: 1, scale: 1 }, { opacity: 0, scale: 3.4, duration: 1.4, ease: "power2.in", overwrite: true });
-    },
     "s-apply": function (st, animate) {
       var btn = document.getElementById("approve"), cur = document.getElementById("cursor");
       if (st < 1) { btn.classList.remove("done"); btn.textContent = "Approve change"; gsap.set(cur, { opacity: 0 }); return; }

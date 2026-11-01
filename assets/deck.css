@@ -152,7 +152,6 @@ h2 em, h1 em { font-style: normal; color: var(--blue); }
 
 /* 4 meet */
 #s-meet .left { width: 700px; }
-#s-meet .zoom { position: absolute; left: 980px; top: 150px; width: 860px; transform-origin: 50% 32%; }
 .params { margin-top: 36px; border: 1.5px solid var(--line); border-radius: 16px; background: #fff; overflow: hidden; width: 640px; }
 .params .row { display: flex; justify-content: space-between; padding: 14px 22px; border-bottom: 1.5px solid var(--line); font-family: var(--mono); font-size: 22px; }
 .params .row:last-child { border-bottom: 0; }
